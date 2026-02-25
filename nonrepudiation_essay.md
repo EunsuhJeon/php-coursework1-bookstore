@@ -23,5 +23,3 @@ Beyond simple file logging, several technologies provide stronger nonrepudiation
 5. **Hash Chains**: Each log entry contains hashes of previous entries, making any alteration detectable.
 
 For online bookstores, combining server logs with digital signatures on purchase confirmations protects merchants from fraudulent refunds and customers from unauthorized charges.
-
-*Word count: 212 words*
