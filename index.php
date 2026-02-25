@@ -80,8 +80,6 @@ switch($_SERVER["REQUEST_METHOD"]){
                 'price' =>  $newPrice// convert to num(float)
             ];
             $books[] = $newItem;
-            // call applying discounts function
-            applyDiscounts($books);
 
             // append log
             $ip = $_SERVER['REMOTE_ADDR'];
