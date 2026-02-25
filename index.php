@@ -52,19 +52,29 @@ switch($_SERVER["REQUEST_METHOD"]){
         && isset($_REQUEST['author'])
         && isset($_REQUEST['genre'])
         && isset($_REQUEST['price'])){
+            $newTitle = htmlspecialchars($_REQUEST['title']);
+            $newAuthor = htmlspecialchars($_REQUEST['author']);
+            $newGenre = htmlspecialchars($_REQUEST['genre']);
+            $newPrice = (float)htmlspecialchars($_REQUEST['price']);
             $newItem = [
-                'title' => htmlspecialchars($_REQUEST['title']), // prevent xss
-                'author' => htmlspecialchars($_REQUEST['author']),
-                'genre' => htmlspecialchars($_REQUEST['genre']),
-                'price' => htmlspecialchars($_REQUEST['price'])
+                'title' => $newTitle, // prevent xss
+                'author' => $newAuthor,
+                'genre' => $newGenre,
+                'price' =>  $newPrice// convert to num(float)
             ];
             $books[] = $newItem;
             // call applying discounts function
             applyDiscounts($books);
-            print_r($books);
+
+            // append log
+            $ip = $_SERVER['REMOTE_ADDR'];
+            $userAgent = $_SERVER['HTTP_USER_AGENT'];
+            $timestamp = date('Y-m-d H:i:s');
+            $log = "[$timestamp] IP: $ip | UA: [$userAgent] | Added book: \"$newTitle\" ($newGenre, $newPrice)\n";
+            file_put_contents('./bookstore_log.txt', $log, FILE_APPEND);
         }
         else{
-            http_response_code(400);
+            http_response_code(400); // Bad Request
             $errorMsg = "Required keys not found";
             echo $errorMsg;
         }
@@ -78,4 +88,7 @@ switch($_SERVER["REQUEST_METHOD"]){
 
 // call applying discounts function
 applyDiscounts($books);
+
+
+
 ?>
