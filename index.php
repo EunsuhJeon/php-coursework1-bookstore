@@ -124,6 +124,12 @@ switch($_SERVER["REQUEST_METHOD"]){
         $errors[] = "VERY VERY BAD REQUEST :(";
 }
 
+// store original price
+foreach ($books as &$book) {
+    $book['original_price'] = $book['price'];
+}
+unset($book);
+
 // call applying discounts function
 applyDiscounts($books);
 
@@ -176,8 +182,8 @@ if (file_exists($logPath)) {
         </label><br>
         <label>Genre:
             <select name="genre" required>
-                <option value="Science Fiction">Science Fiction</option>
-                <option value="Fantasy">Fantasy</option>
+                <option value="Science Fiction">Science Fiction(10% Off)</option>
+                <option value="Fantasy">Fantasy(5% Off)</option>
                 <option value="Suspense">Suspense</option>
                 <option value="Mystery">Mystery</option>
                 <option value="Horror">Horror</option>
@@ -197,7 +203,7 @@ if (file_exists($logPath)) {
             <th>Title</th>
             <th>Author</th>
             <th>Genre</th>
-            <th>Price(after discount)</th>
+            <th>Price (Original / Discounted)</th>
         </thead>
         <tbody>
             <?php foreach ($books as $book): ?>
@@ -205,7 +211,7 @@ if (file_exists($logPath)) {
                     <td><?php echo htmlspecialchars($book['title']); ?></td>
                     <td><?php echo htmlspecialchars($book['author']); ?></td>
                     <td><?php echo htmlspecialchars($book['genre']); ?></td>
-                    <td><?php echo number_format($book['price'],2); ?></td>
+                    <td><?php echo "$" . number_format($book['original_price'], 2) . " / $" . number_format($book['price'], 2); ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
