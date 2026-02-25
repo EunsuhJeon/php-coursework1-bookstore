@@ -1,6 +1,6 @@
 <?php
 // -------------------------
-// books
+// Book inventory
 // -------------------------
 $books = [
     [
@@ -35,16 +35,22 @@ $books = [
     ],
 ];
 
+// -------------------------
+// Apply Discounts
+// -------------------------
 function applyDiscounts(array &$books) {
     foreach ($books as &$book) {
         if($book['genre'] === 'Science Fiction'){
             // 10% discount
-            $book['price'] = $book['price']*0.9;
+            $book['price'] = round($book['price']*0.9, 2);
         }
     }
     unset($book);
 }
 
+// -------------------------
+// Add new Book
+// -------------------------
 $errorMsg = '';
 switch($_SERVER["REQUEST_METHOD"]){
     case "POST":
@@ -89,6 +95,84 @@ switch($_SERVER["REQUEST_METHOD"]){
 // call applying discounts function
 applyDiscounts($books);
 
-
+// -------------------------
+// Calculate total price
+// -------------------------
+$total = 0;
+foreach ($books as $book) {
+    $total += $book['price'];
+}
 
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Bookstore</title>
+    <link href="./styles.css" rel="stylesheet">
+</head>
+<body>
+    <h1>Online Bookstore</h1>
+    <!-- success msg -->
+    <?php if($message): ?>
+        <div class="success"><?php echo $message; ?></div>
+    <?php endif; ?>
+
+    <!-- error msg -->
+    <?php if(!empty($errors)): ?>
+        <div class="error">
+            <h3>입력 오류:</h3>
+            <?php foreach ($errors as $err): ?>
+                <p>• <?php echo $err; ?></p>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+
+    <!-- add new book -->
+    <h2>Add New Book</h2>
+    <form method="POST" action="">
+        <label>Title:
+            <input type="text" name="title" required>
+        </label><br>
+        <label>Author:
+            <input type="text" name="author" required>
+        </label><br>
+        <label>Genre:
+            <input type="text" name="genre" required>
+        </label><br>
+        <label>Price:
+            <input type="number" name="price" step="0.01" required>
+        </label><br>
+        <button type="submit">add</button>
+    </form>
+
+    <!-- book list -->
+    <h2>Book Inventory</h2>
+    <table>
+        <thead>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Genre</th>
+            <th>Price(after discount)</th>
+        </thead>
+        <tbody>
+            <?php foreach ($books as $book): ?>
+                <tr>
+                    <td><?php echo htmlspecialchars($book['title']); ?></td>
+                    <td><?php echo htmlspecialchars($book['author']); ?></td>
+                    <td><?php echo htmlspecialchars($book['genre']); ?></td>
+                    <td><?php echo number_format(htmlspecialchars($book['price']),2); ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+
+    <!-- total price -->
+    <h3>Total Price (After Discount): 
+        <span style="color: #005e8d;">
+            <?php echo "$".number_format($total, 2); ?>
+        </span>
+    </h3>
+</body>
+</html>
