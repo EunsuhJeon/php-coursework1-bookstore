@@ -34,6 +34,7 @@ $books = [
         'price' => 34.00
     ],
 ];
+
 function applyDiscounts(array &$books) {
     foreach ($books as &$book) {
         if($book['genre'] === 'Science Fiction'){
@@ -43,4 +44,38 @@ function applyDiscounts(array &$books) {
     }
     unset($book);
 }
+
+$errorMsg = '';
+switch($_SERVER["REQUEST_METHOD"]){
+    case "POST":
+        if(isset($_REQUEST['title']) 
+        && isset($_REQUEST['author'])
+        && isset($_REQUEST['genre'])
+        && isset($_REQUEST['price'])){
+            $newItem = [
+                'title' => htmlspecialchars($_REQUEST['title']), // prevent xss
+                'author' => htmlspecialchars($_REQUEST['author']),
+                'genre' => htmlspecialchars($_REQUEST['genre']),
+                'price' => htmlspecialchars($_REQUEST['price'])
+            ];
+            $books[] = $newItem;
+            // call applying discounts function
+            applyDiscounts($books);
+            print_r($books);
+        }
+        else{
+            http_response_code(400);
+            $errorMsg = "Required keys not found";
+            echo $errorMsg;
+        }
+        break;
+    case "GET":
+        break;
+    default:
+        http_response_code(400); // Bad Request
+        $errorMsg = "VERY VERY BAD REQUEST :(";
+}
+
+// call applying discounts function
+applyDiscounts($books);
 ?>
