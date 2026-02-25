@@ -24,13 +24,13 @@ $books = [
     [
         'title' => 'The Lord of the Rings',
         'author' => 'J. R. R. Tolkien',
-        'genre' => 'fantasy',
+        'genre' => 'Fantasy',
         'price' => 27.79
     ],
     [
         'title' => 'The Chronicles of Narnia',
         'author' => 'C. S. Lewis',
-        'genre' => 'fantasy',
+        'genre' => 'Fantasy',
         'price' => 34.00
     ],
 ];
@@ -50,6 +50,10 @@ function applyDiscounts(array &$books) {
         if($book['genre'] === 'Science Fiction'){
             // 10% discount
             $book['price'] = round($book['price']*0.9, 2);
+        } 
+        elseif ($book['genre'] === 'Fantasy') {
+            // 5% discount
+            $book['price'] = round($book['price']*0.95, 2);
         }
     }
     unset($book);
