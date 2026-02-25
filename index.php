@@ -63,7 +63,7 @@ function applyDiscounts(array &$books) {
 // Add new Book
 // -------------------------
 $errors = [];
-$message = '';
+// $message = '';
 
 switch($_SERVER["REQUEST_METHOD"]){
     case "POST":
@@ -106,7 +106,7 @@ switch($_SERVER["REQUEST_METHOD"]){
             $timestamp = date('Y-m-d H:i:s');
             $log = "[$timestamp] IP: $ip | UA: [$userAgent] | Added book: \"$newTitle\" ($newGenre, $newPrice)\n";
             file_put_contents('./bookstore_log.txt', $log, FILE_APPEND);
-            $message = "Book added successfully";
+            // $message = "Book added successfully";
             }
             if (!empty($errors)) {
                 http_response_code(400);
@@ -155,11 +155,6 @@ if (file_exists($logPath)) {
 </head>
 <body>
     <h1>Online Bookstore</h1>
-    <!-- success msg -->
-    <?php if($message): ?>
-        <div class="success"><?php echo $message; ?></div>
-    <?php endif; ?>
-
     <!-- error msg -->
     <?php if(!empty($errors)): ?>
         <div class="error">
