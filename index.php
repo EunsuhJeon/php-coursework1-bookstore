@@ -36,6 +36,13 @@ $books = [
 ];
 
 // -------------------------
+// Server Info & Timestamp
+// -------------------------
+$currentTime = date('Y-m-d H:i:s');
+$curIpAddress = $_SERVER['REMOTE_ADDR'];
+$curUserAgent = $_SERVER['HTTP_USER_AGENT'];
+
+// -------------------------
 // Apply Discounts
 // -------------------------
 function applyDiscounts(array &$books) {
@@ -51,7 +58,7 @@ function applyDiscounts(array &$books) {
 // -------------------------
 // Add new Book
 // -------------------------
-$errorMsg = '';
+$errors = [];
 switch($_SERVER["REQUEST_METHOD"]){
     case "POST":
         if(isset($_REQUEST['title']) 
@@ -81,15 +88,14 @@ switch($_SERVER["REQUEST_METHOD"]){
         }
         else{
             http_response_code(400); // Bad Request
-            $errorMsg = "Required keys not found";
-            echo $errorMsg;
+            $errors[] = "Required keys not found";
         }
         break;
     case "GET":
         break;
     default:
         http_response_code(400); // Bad Request
-        $errorMsg = "VERY VERY BAD REQUEST :(";
+        $errors[] = "VERY VERY BAD REQUEST :(";
 }
 
 // call applying discounts function
@@ -122,7 +128,7 @@ foreach ($books as $book) {
     <!-- error msg -->
     <?php if(!empty($errors)): ?>
         <div class="error">
-            <h3>입력 오류:</h3>
+            <h3>Input Error:</h3>
             <?php foreach ($errors as $err): ?>
                 <p>• <?php echo $err; ?></p>
             <?php endforeach; ?>
@@ -174,5 +180,12 @@ foreach ($books as $book) {
             <?php echo "$".number_format($total, 2); ?>
         </span>
     </h3>
+
+    <!-- Server Info & Timestamp -->
+    <h2>Server Info</h2>
+    <p>Request time: <?php echo $currentTime; ?></p>
+    <p>IP: <?php echo $curIpAddress; ?></p>
+    <p>User agent: <?php echo htmlspecialchars($curUserAgent); ?></p>
+
 </body>
 </html>
