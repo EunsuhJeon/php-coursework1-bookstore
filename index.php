@@ -113,6 +113,15 @@ foreach ($books as $book) {
     $total += $book['price'];
 }
 
+// -------------------------
+// Show logs
+// -------------------------
+$logContent = '';
+$logPath = './bookstore_log.txt';
+if (file_exists($logPath)) {
+    $logContent = file_get_contents($logPath);
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -191,5 +200,8 @@ foreach ($books as $book) {
     <p>IP: <?php echo $curIpAddress; ?></p>
     <p>User agent: <?php echo htmlspecialchars($curUserAgent); ?></p>
 
+    <!-- log content -->
+    <h2>Log File</h2>
+    <pre><?php echo htmlspecialchars($logContent); ?></pre>
 </body>
 </html>
