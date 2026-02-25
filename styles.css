@@ -8,5 +8,5 @@ body { font-family: Arial, sans-serif; max-width: 1000px; margin: 0 auto; paddin
         pre { background: #f8f8f8; padding: 15px; border-radius: 5px; overflow-x: auto; }
         form { background: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0; }
         label { display: block; margin: 10px 0; }
-        input[type="text"], input[type="number"] { width: 300px; padding: 8px; }
+        input[type="text"], input[type="number"], select { width: 300px; padding: 8px; }
         button { background: #007cba; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }

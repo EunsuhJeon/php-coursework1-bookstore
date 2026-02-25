@@ -175,7 +175,14 @@ if (file_exists($logPath)) {
             <input type="text" name="author" required>
         </label><br>
         <label>Genre:
-            <input type="text" name="genre" required>
+            <select name="genre" required>
+                <option value="Science Fiction">Science Fiction</option>
+                <option value="Fantasy">Fantasy</option>
+                <option value="Suspense">Suspense</option>
+                <option value="Mystery">Mystery</option>
+                <option value="Horror">Horror</option>
+                <option value="Thriller">Thriller</option>
+            </select>
         </label><br>
         <label>Price:
             <input type="number" name="price" step="0.01" required>
