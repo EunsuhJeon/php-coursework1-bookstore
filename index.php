@@ -63,21 +63,40 @@ function applyDiscounts(array &$books) {
 // Add new Book
 // -------------------------
 $errors = [];
+$message = '';
+
 switch($_SERVER["REQUEST_METHOD"]){
     case "POST":
-        if(isset($_REQUEST['title']) 
-        && isset($_REQUEST['author'])
-        && isset($_REQUEST['genre'])
-        && isset($_REQUEST['price'])){
-            $newTitle = htmlspecialchars($_REQUEST['title']);
-            $newAuthor = htmlspecialchars($_REQUEST['author']);
-            $newGenre = htmlspecialchars($_REQUEST['genre']);
-            $newPrice = (float)htmlspecialchars($_REQUEST['price']);
-            $newItem = [
+        if(isset($_REQUEST['title'], $_REQUEST['author'], $_REQUEST['genre'], $_REQUEST['price'])){
+            $newTitle = trim($_REQUEST['title']);
+            $newAuthor = trim($_REQUEST['author']);
+            $newGenre = trim($_REQUEST['genre']);
+            $priceStr = trim($_REQUEST['price']);
+
+            // validate if they're empty
+            if ($newTitle === '') $errors[] = "Title cannot be empty.";
+            if ($newAuthor === '') $errors[] = "Author cannot be empty.";
+            if ($newGenre === '') $errors[] = "Genre cannot be empty.";
+            if ($priceStr === '') $errors[] = "Price cannot be empty.";
+
+            // validate if price is numeric
+            if ($priceStr !== '' && !is_numeric($priceStr)) {
+                $errors[] = "Price must be a number.";
+            }
+            if ($priceStr !== '' && is_numeric($priceStr) && (float)$priceStr < 0) {
+                $errors[] = "Price cannot be negative.";
+            }
+
+            if (empty($errors)) {
+                $newTitle = htmlspecialchars($newTitle);
+                $newAuthor = htmlspecialchars($newAuthor);
+                $newGenre = htmlspecialchars($newGenre);
+                $newPrice = (float)$priceStr;
+                $newItem = [
                 'title' => $newTitle, // prevent xss
                 'author' => $newAuthor,
                 'genre' => $newGenre,
-                'price' =>  $newPrice// convert to num(float)
+                'price' => $newPrice
             ];
             $books[] = $newItem;
 
@@ -87,6 +106,11 @@ switch($_SERVER["REQUEST_METHOD"]){
             $timestamp = date('Y-m-d H:i:s');
             $log = "[$timestamp] IP: $ip | UA: [$userAgent] | Added book: \"$newTitle\" ($newGenre, $newPrice)\n";
             file_put_contents('./bookstore_log.txt', $log, FILE_APPEND);
+            $message = "Book added successfully";
+            }
+            if (!empty($errors)) {
+                http_response_code(400);
+            }
         }
         else{
             http_response_code(400); // Bad Request
@@ -179,7 +203,7 @@ if (file_exists($logPath)) {
                     <td><?php echo htmlspecialchars($book['title']); ?></td>
                     <td><?php echo htmlspecialchars($book['author']); ?></td>
                     <td><?php echo htmlspecialchars($book['genre']); ?></td>
-                    <td><?php echo number_format(htmlspecialchars($book['price']),2); ?></td>
+                    <td><?php echo number_format($book['price'],2); ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
